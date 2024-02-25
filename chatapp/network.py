@@ -2,8 +2,16 @@ from scapy.all import ARP, Ether, srp
 from contextlib import closing
 import socket, threading
 
-def find_client(interface, ports: (int, int)):
+def find_client(interface, ports: (int, int), target: int = None) -> [(str, int)]:
     'finds a client on the network using the interface and ports provided.'
+
+    if target is not None:
+        clients = [interface]
+        
+        clients = check_ports(clients, ports[0], ports[1])
+        return clients
+        
+        
     
     arp = ARP(pdst=interface)
     ether = Ether(dst="ff:ff:ff:ff:ff:ff")

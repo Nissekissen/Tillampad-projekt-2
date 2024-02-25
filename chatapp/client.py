@@ -176,6 +176,7 @@ class Receiver:
     
     def start(self):
         self.listen_thread.start()
+        self.client.ctx.write_message(f"Listening on {self.host}:{self.port}", curses.color_pair(4))
     
     def listen(self):
         
@@ -194,7 +195,7 @@ class Receiver:
             if not data:
                 break
 
-            # print(f"Received {data.decode('utf-16')} from {conn.getpeername()}")
+            # print(data.decode('utf-16'))
             # self.client.ctx.write_message(f"Received {data.decode('utf-16')} from {conn.getpeername()}")
 
             data = data.decode('utf-16')
@@ -384,6 +385,9 @@ class Receiver:
                     if to_id != self.client.id:
                         continue
 
+                    if self.client.get_connection(from_id) == None:
+                        continue
+
                     # Send a PLONG message back
                     sender = self.client.get_sender(self.client.get_connection(from_id).addr)
                     if sender == None:
@@ -458,7 +462,7 @@ class Sender:
                 if connection == None:
                     continue
 
-                self.client.ctx.write_message(f"{connection.username} has left the chat!")
+                self.client.ctx.write_message(f"{connection.username} has left the chat!", curses.color_pair(4))
 
                 self.client.remove_connection(self.id)
 
